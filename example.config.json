@@ -1,0 +1,4 @@
+{
+  "interval": "2m0s",
+  "backend": "consul"
+}
