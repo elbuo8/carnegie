@@ -39,9 +39,7 @@ func (c *Carnegie) Start() error {
 }
 
 func (c *Carnegie) RoundTrip(r *http.Request) (*http.Response, error) {
-	r.RequestURI = ""
-	client := &http.Client{}
-	res, err := client.Do(r)
+	res, err := http.DefaultTransport.RoundTrip(r)
 	if err != nil {
 		return nil, err
 	}
