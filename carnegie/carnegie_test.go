@@ -46,12 +46,22 @@ func TestStart(t *testing.T) {
 }
 
 func TestHandler(t *testing.T) {
+	fakeSrv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}))
 	config := viper.New()
 	config.Set("backend", "consul")
 	carnegie, err := New(config)
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
+	// replace consul with BackendInventoryMock
+	carnegie.Cache.Backend = &BackendInventoryMock{
+		Hosts: map[string][]string{
+			"test.com": []string{fakeSrv.URL},
+		},
+	}
+
 	// empty host
 	req, err := http.NewRequest("GET", "http://localhost:8181", nil)
 	if err != nil {

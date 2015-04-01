@@ -28,7 +28,11 @@ func TestNewCache(t *testing.T) {
 
 func TestGetAddresses(t *testing.T) {
 	localCache, _ := LRU.New(64)
-	backend := &BackendInventoryMock{}
+	backend := &BackendInventoryMock{
+		Hosts: map[string][]string{
+			"google.com": []string{"https://google.com"},
+		},
+	}
 	cache := &Cache{
 		LocalInventory: localCache,
 		Backend:        backend,
@@ -56,7 +60,11 @@ func TestGetAddresses(t *testing.T) {
 
 func TestRotateAddresses(t *testing.T) {
 	localCache, _ := LRU.New(64)
-	backend := &BackendInventoryMock{}
+	backend := &BackendInventoryMock{
+		Hosts: map[string][]string{
+			"google.com": []string{"https://google.com"},
+		},
+	}
 	cache := &Cache{
 		LocalInventory: localCache,
 		Backend:        backend,
