@@ -56,7 +56,7 @@ func TestHandler(t *testing.T) {
 		t.Fatalf("err: %v", err)
 	}
 	// replace consul with BackendInventoryMock
-	carnegie.Cache.Backend = &BackendInventoryMock{
+	carnegie.Cache.Backend = &backendInventoryMock{
 		Hosts: map[string][]string{
 			"test.com": []string{fakeSrv.URL},
 		},
@@ -68,13 +68,13 @@ func TestHandler(t *testing.T) {
 		t.Fatalf("err: %v", err)
 	}
 	w := httptest.NewRecorder()
-	carnegie.Handler(w, req)
+	carnegie.handler(w, req)
 	if w.Code != http.StatusNotFound {
 		t.Fatalf("should return 404 on no backend")
 	}
 	req.Host = "test.com"
 	w = httptest.NewRecorder()
-	carnegie.Handler(w, req)
+	carnegie.handler(w, req)
 	if w.Code != http.StatusOK {
 		t.Fatalf("should return 200")
 	}
