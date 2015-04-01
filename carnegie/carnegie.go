@@ -11,6 +11,8 @@ type Carnegie struct {
 	Cache         *Cache
 	Server        *http.Server
 	CacheInterval time.Duration
+	Config        *viper.Viper
+	Started       bool
 }
 
 func New(config *viper.Viper) (*Carnegie, error) {
@@ -19,36 +21,21 @@ func New(config *viper.Viper) (*Carnegie, error) {
 		return nil, err
 	}
 	config.SetDefault("interval", 60*time.Second)
-	// BILL: Move this up
 	config.SetDefault("address", ":8181")
-	
-	// BILL: Don't create carnegie as a pointer.
-	//carnegie := &Carnegie{
-	//	Cache:         cache,
-	//	CacheInterval: config.GetDuration("interval"),
-	//}
+
 	carnegie := Carnegie{
 		Cache:         cache,
 		CacheInterval: config.GetDuration("interval"),
-		
-		// BILL: Why not include this in the composite literal?
-		Server:         &http.Server{
-			Addr:    config.GetString("address"),
-			Handler: http.HandlerFunc(carnegie.Handler),
-		}
+		Server: &http.Server{
+			Addr: config.GetString("address"),
+		},
+		Config:  config,
+		Started: false,
 	}
-	
+
+	carnegie.Server.Handler = http.HandlerFunc(carnegie.Handler)
 	carnegie.Server.SetKeepAlivesEnabled(false)
 
-	// BILL: Why not set this pointer from the beginning above?
-	//srv := &http.Server{
-	//	Addr:    config.GetString("address"),
-	//	Handler: http.HandlerFunc(carnegie.Handler),
-	//}
-	//srv.SetKeepAlivesEnabled(false)
-	//carnegie.Server = srv
-
-	//return carnegie, nil
 	return &carnegie, nil
 }
 
