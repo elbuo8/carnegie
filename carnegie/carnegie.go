@@ -57,32 +57,19 @@ func (c *Carnegie) RoundTrip(r *http.Request) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	
-	// BILL: Why the assignment to test the status code?
-	//statusCode := res.StatusCode
-	//if statusCode >= 500 {
-	//	c.Cache.Invalidate(r.Host)
-	//}
-	
+
 	if res.StatusCode >= 500 {
 		c.Cache.Invalidate(r.Host)
 	}
-	
+
 	return res, nil
 }
 
 func (c *Carnegie) UpdateCacheLoop() {
 	ticker := time.NewTicker(c.CacheInterval)
 	for {
-		// BILL: No need for a select here since you are
-		// working with a single channel
 		<-ticker.C
 		c.Cache.LocalInventory.Purge()
-		
-		//select {
-		//case <-ticker.C:
-		//	c.Cache.LocalInventory.Purge()
-		//}
 	}
 }
 
@@ -93,11 +80,7 @@ func (c *Carnegie) Handler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	
-	// BILL: You are not checking if the urls slice is empty?
-	
-	// BILL: I don't know enough but creating this value for every request
-	//       scares me unless there is no other way.
+
 	proxy := httputil.NewSingleHostReverseProxy(urls[0])
 	proxy.Transport = c
 	proxy.ServeHTTP(w, r)
