@@ -4,11 +4,11 @@ import (
 	"net/url"
 )
 
-type BackendInventoryMock struct {
+type backendInventoryMock struct {
 	Hosts map[string][]string
 }
 
-func (mock *BackendInventoryMock) GetBackends(host string) ([]*url.URL, error) {
+func (mock *backendInventoryMock) GetBackends(host string) ([]*url.URL, error) {
 	var parsedURL *url.URL
 	var urls []*url.URL
 	if backends, ok := mock.Hosts[host]; ok {
