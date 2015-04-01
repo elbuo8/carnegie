@@ -3,4 +3,4 @@ language: go
 go:
   - tip
 
-script: go test/carnegie
+script: go test -v ./carnegie
