@@ -41,7 +41,14 @@ func New(config *viper.Viper) (*Carnegie, error) {
 
 // BILL: What happens if I call Start 1000 times.
 func (c *Carnegie) Start() error {
+	if c.Started {
+		return nil
+	}
+	c.Started = true
 	go c.UpdateCacheLoop()
+	if certFile, keyFile := c.Config.GetString("cert"), c.Config.GetString("key"); certFile != "" && keyFile != "" {
+		go c.Server.ListenAndServeTLS(certFile, keyFile)
+	}
 	return c.Server.ListenAndServe()
 }
 
