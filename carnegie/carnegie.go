@@ -1,5 +1,3 @@
-// BILL: Run through golint. Exported identifiers should have comments. It is hard
-//       to understand the entire story.
 package carnegie
 
 import (
