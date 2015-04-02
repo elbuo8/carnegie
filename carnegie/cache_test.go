@@ -36,7 +36,13 @@ func TestGetAddresses(t *testing.T) {
 		LocalInventory: localCache,
 		Backend:        backend,
 	}
-	_, err := cache.GetAddresses("test")
+	// Should return error if backend threw and error
+	_, err := cache.GetAddresses("error")
+	if err == nil {
+		t.Fatalf("err should be returned if backend returns error")
+	}
+	// Should return error on a non existent backend
+	_, err = cache.GetAddresses("test")
 	if err == nil {
 		t.Fatalf("err should be returned if no backends exist")
 	}
