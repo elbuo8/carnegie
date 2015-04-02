@@ -16,10 +16,7 @@ type Cache struct {
 
 // NewCache returns a new Cache with the provided configuration.
 func NewCache(config *viper.Viper) (*Cache, error) {
-	cache, err := LRU.New(128)
-	if err != nil {
-		return nil, err
-	}
+	cache, _ := LRU.New(128)
 	backend, err := NewBackend(config.GetString("backend"), config)
 	if err != nil {
 		return nil, err

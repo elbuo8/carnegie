@@ -10,7 +10,6 @@ import (
 func TestNewCache(t *testing.T) {
 	config := viper.New()
 	// Test for unsupported backend
-	//config.Set("backend", "c")
 	cache, err := NewCache(config)
 	if err == nil {
 		t.Fatalf("should report unsupported cache")
