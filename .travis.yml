@@ -5,10 +5,10 @@ go:
 
 before_install:
   - wget 'https://dl.bintray.com/mitchellh/consul/0.5.0_linux_amd64.zip'
-  - unzip "0.5.0_linux_amd64.zip"
+  - unzip '0.5.0_linux_amd64.zip'
   - ./consul --version
-  - mkdir -p $HOME/consul.d/
-  - echo '{"service": {"name": "test.com", "port": 8000, "check": {"http": "http://localhost:8000", "interval": "1s"}}}' > $HOME/consul.d/test.com.json
+  - mkdir $HOME/consul.d
+  - "echo '{\"service\": {\"name\": \"test.com\", \"port\": 8000, \"check\": {\"http\": \"http://localhost:8000\", \"interval\": \"1s\"}}}' >> $HOME/consul.d/test.com.json"
   - go get github.com/modocache/gover
   - go get github.com/mattn/goveralls
   - go get golang.org/x/tools/cmd/cover
