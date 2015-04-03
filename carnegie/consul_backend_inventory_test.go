@@ -16,7 +16,6 @@ func TestNewConsulBackend(t *testing.T) {
 	}
 }
 
-/*
 func TestGetBackends(t *testing.T) {
 	config := viper.New()
 	backend, err := NewConsulBackend(config)
@@ -30,4 +29,3 @@ func TestGetBackends(t *testing.T) {
 		t.Fatalf("err: %v", err)
 	}
 }
-*/
