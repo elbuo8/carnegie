@@ -20,11 +20,8 @@ func NewConsulBackend(config *viper.Viper) (*ConsulBackend, error) {
 		Scheme:  config.GetString("scheme"),
 		Token:   config.GetString("token"),
 	}
-
-	consulClient, err := consulApi.NewClient(&consulConfig)
-	if err != nil {
-		return nil, err
-	}
+	// NewClient never returns an error
+	consulClient, _ := consulApi.NewClient(&consulConfig)
 
 	return &ConsulBackend{
 		Client: consulClient,
@@ -44,9 +41,8 @@ func (cb *ConsulBackend) GetBackends(host string) ([]*url.URL, error) {
 		if se.Service.Port != 0 {
 			address += ":" + strconv.Itoa(se.Service.Port)
 		}
-		if urls[i], err = url.Parse(address); err != nil {
-			return nil, err
-		}
+		// Addresses from Consul are always valid
+		urls[i], _ = url.Parse(address)
 	}
 
 	return urls, nil
