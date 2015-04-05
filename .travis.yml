@@ -16,6 +16,7 @@ before_install:
 script:
   - ../consul agent -server -bootstrap-expect 1 -data-dir /tmp/consul -config-dir $HOME/consul.d &
   - python -m SimpleHTTPServer &
+  - sleep 30
   - go test -coverprofile=carnegie.coverprofile ./carnegie
   - $HOME/gopath/bin/gover
   - $HOME/gopath/bin/goveralls -coverprofile=gover.coverprofile -service=travis-ci
