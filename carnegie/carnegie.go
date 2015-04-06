@@ -2,8 +2,10 @@ package carnegie
 
 import (
 	"github.com/spf13/viper"
+	"log"
 	"net/http"
 	"net/http/httputil"
+	"os"
 	"time"
 )
 
@@ -14,6 +16,8 @@ type Carnegie struct {
 	CacheInterval time.Duration
 	Config        *viper.Viper
 	Started       bool
+	Verbose       bool
+	Logger        *log.Logger
 }
 
 // New returns a new Carnegie with the provided configuration.
@@ -24,6 +28,8 @@ func New(config *viper.Viper) (*Carnegie, error) {
 	}
 	config.SetDefault("interval", 60*time.Second)
 	config.SetDefault("address", ":8181")
+	config.SetDefault("verbose", true)
+	config.SetDefault("log", "stdout")
 
 	carnegie := Carnegie{
 		Cache:         cache,
@@ -33,6 +39,12 @@ func New(config *viper.Viper) (*Carnegie, error) {
 		},
 		Config:  config,
 		Started: false,
+		Verbose: config.GetBool("verbose"),
+	}
+
+	switch config.GetString("log") {
+	case "stdout":
+		carnegie.Logger = log.New(os.Stdout, "carnegie: ", log.Lmicroseconds)
 	}
 
 	carnegie.Server.Handler = http.HandlerFunc(carnegie.handler)
@@ -79,6 +91,9 @@ func (c *Carnegie) updateCacheLoop() {
 }
 
 func (c *Carnegie) handler(w http.ResponseWriter, r *http.Request) {
+	if c.Verbose {
+		c.Logger.Printf("%s %s %s", r.Method, r.URL, r.Host)
+	}
 	host := r.Host
 	urls, err := c.Cache.GetAddresses(host)
 	if err != nil {
